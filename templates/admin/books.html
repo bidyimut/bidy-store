@@ -1,0 +1,52 @@
+{% extends "admin/base_admin.html" %}
+{% block title %}Kelola Buku — Admin{% endblock %}
+{% block admin_content %}
+<div class="admin-header">
+  <div>
+    <h1>Kelola Buku</h1>
+    <p class="muted">{{ books|length }} buku terdaftar</p>
+  </div>
+  <a href="{{ url_for('admin_book_add') }}" class="btn">+ Tambah Buku</a>
+</div>
+
+<div class="admin-table-wrap">
+  <table class="admin-table">
+    <thead>
+      <tr>
+        <th>Sampul</th>
+        <th>Judul</th>
+        <th>Penulis</th>
+        <th>Kategori</th>
+        <th>Harga</th>
+        <th>Rating</th>
+        <th>Aksi</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for b in books %}
+      <tr>
+        <td>
+          {% if b.cover_image %}
+          <img src="{{ url_for('static', filename='uploads/' + b.cover_image) }}" alt="" class="table-cover-img">
+          {% else %}
+          <div class="cover mini table-cover" style="--c1: {{ b.c1 }}; --c2: {{ b.c2 }};"><span class="cover-title">{{ b.title[:10] }}</span></div>
+          {% endif %}
+        </td>
+        <td><strong>{{ b.title }}</strong></td>
+        <td>{{ b.author }}</td>
+        <td><span class="pill pill-sm">{{ b.category }}</span></td>
+        <td>{{ b.price|rupiah }}</td>
+        <td>★ {{ b.rating }}</td>
+        <td class="action-cell">
+          <a href="{{ url_for('admin_book_edit', book_id=b.id) }}" class="btn btn-small btn-ghost">Edit</a>
+          <form action="{{ url_for('admin_book_delete', book_id=b.id) }}" method="post" style="display:inline;" onsubmit="return confirm('Yakin ingin menghapus buku ini?');">
+            <button class="btn btn-small btn-danger" type="submit">Hapus</button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}
+
