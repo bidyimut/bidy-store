@@ -1,0 +1,54 @@
+{% extends "admin/base_admin.html" %}
+{% block title %}Daftar Pesanan — Admin{% endblock %}
+{% block admin_content %}
+<div class="admin-header">
+  <div>
+    <h1>Daftar Pesanan</h1>
+    <p class="muted">{{ orders|length }} pesanan</p>
+  </div>
+</div>
+
+{% if orders %}
+<div class="admin-table-wrap">
+  <table class="admin-table">
+    <thead>
+      <tr>
+        <th>Kode Pesanan</th>
+        <th>Pelanggan</th>
+        <th>Telepon</th>
+        <th>Pembayaran</th>
+        <th>Total</th>
+        <th>Tanggal</th>
+        <th>Aksi</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for o in orders %}
+      <tr>
+        <td><code>{{ o.order_code }}</code></td>
+        <td><strong>{{ o.customer_name }}</strong></td>
+        <td>{{ o.phone }}</td>
+        <td><span class="pill pill-sm">{{ o.payment_method }}</span></td>
+        <td><strong>{{ o.total|rupiah }}</strong></td>
+        <td class="muted">{{ o.created_at }}</td>
+        <td>
+          <a href="{{ url_for('admin_order_detail', order_id=o.id) }}" class="btn btn-small">Detail</a>
+          <a href="{{ url_for('receipt', order_code=o.order_code) }}" class="btn btn-small btn-ghost" target="_blank">Struk</a>
+          <form method="POST" action="{{ url_for('admin_order_delete', order_id=o.id) }}"
+                style="display:inline;"
+                onsubmit="return confirm('Hapus pesanan {{ o.order_code }}? Tindakan ini tidak dapat dibatalkan.')">
+            <button type="submit" class="btn btn-small btn-danger">Hapus</button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% else %}
+<div class="admin-empty">
+  <p class="muted">Belum ada pesanan masuk.</p>
+</div>
+{% endif %}
+{% endblock %}
+
