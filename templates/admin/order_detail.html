@@ -1,0 +1,90 @@
+{% extends "admin/base_admin.html" %}
+{% block title %}Detail Pesanan {{ order.order_code }} — Admin{% endblock %}
+{% block admin_content %}
+<div class="admin-header">
+  <div>
+    <a href="{{ url_for('admin_orders') }}" class="back">← Kembali ke daftar pesanan</a>
+    <h1>Detail Pesanan</h1>
+  </div>
+  <div style="display:flex; gap:8px; align-items:center;">
+    <a href="{{ url_for('receipt', order_code=order.order_code) }}" class="btn btn-ghost" target="_blank">🖨️ Lihat Struk</a>
+    <form method="POST" action="{{ url_for('admin_order_delete', order_id=order.id) }}"
+          onsubmit="return confirm('Hapus pesanan {{ order.order_code }}? Tindakan ini tidak dapat dibatalkan.')">
+      <button type="submit" class="btn btn-danger">🗑️ Hapus Pesanan</button>
+    </form>
+  </div>
+</div>
+
+<div class="order-detail-grid">
+  <div class="order-info-card">
+    <h3>Informasi Pelanggan</h3>
+    <div class="info-row">
+      <span class="info-label">Nama</span>
+      <span>{{ order.customer_name }}</span>
+    </div>
+    <div class="info-row">
+      <span class="info-label">Telepon</span>
+      <span>{{ order.phone or '-' }}</span>
+    </div>
+    <div class="info-row">
+      <span class="info-label">Alamat</span>
+      <span>{{ order.address or '-' }}</span>
+    </div>
+  </div>
+
+  <div class="order-info-card">
+    <h3>Informasi Pesanan</h3>
+    <div class="info-row">
+      <span class="info-label">Kode Pesanan</span>
+      <code>{{ order.order_code }}</code>
+    </div>
+    <div class="info-row">
+      <span class="info-label">Tanggal</span>
+      <span>{{ order.created_at }}</span>
+    </div>
+    <div class="info-row">
+      <span class="info-label">Pembayaran</span>
+      <span class="pill pill-sm">{{ order.payment_method }}</span>
+    </div>
+    <div class="info-row">
+      <span class="info-label">Total</span>
+      <strong class="price">{{ order.total|rupiah }}</strong>
+    </div>
+  </div>
+</div>
+
+<div class="admin-section" style="margin-top: 32px;">
+  <h3>Item Pesanan</h3>
+  <div class="admin-table-wrap">
+    <table class="admin-table">
+      <thead>
+        <tr>
+          <th>Buku</th>
+          <th>Penulis</th>
+          <th>Harga</th>
+          <th>Qty</th>
+          <th>Subtotal</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for it in items %}
+        <tr>
+          <td><strong>{{ it.book_title }}</strong></td>
+          <td>{{ it.book_author }}</td>
+          <td>{{ it.price|rupiah }}</td>
+          <td>{{ it.qty }}</td>
+          <td><strong>{{ it.subtotal|rupiah }}</strong></td>
+        </tr>
+        {% endfor %}
+      </tbody>
+      <tfoot>
+        <tr>
+          <td colspan="4" style="text-align: right;"><strong>TOTAL</strong></td>
+          <td><strong class="price">{{ order.total|rupiah }}</strong></td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+</div>
+{% endblock %}
+
