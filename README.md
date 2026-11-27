@@ -1,1 +1,0 @@
-# bidy-store
