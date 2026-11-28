@@ -8,7 +8,13 @@
     <div class="cart-list">
       {% for it in items %}
       <div class="cart-item">
-        <div class="cover mini" style="--c1: {{ it.book.c1 }}; --c2: {{ it.book.c2 }};"><span class="cover-title">{{ it.book.title }}</span></div>
+        <div class="cover mini {% if it.book.cover_image %}cover-has-img{% endif %}" style="--c1: {{ it.book.c1 }}; --c2: {{ it.book.c2 }};">
+          {% if it.book.cover_image %}
+            <img src="{{ url_for('static', filename='uploads/' + it.book.cover_image) }}" alt="{{ it.book.title }}" class="cover-img">
+          {% else %}
+            <span class="cover-title">{{ it.book.title }}</span>
+          {% endif %}
+        </div>
         <div class="cart-info">
           <a href="{{ url_for('detail', book_id=it.book.id) }}"><strong>{{ it.book.title }}</strong></a>
           <span class="muted">{{ it.book.author }}</span>
